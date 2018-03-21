@@ -173,6 +173,51 @@ int main()
 		5.0f, -0.5f, -5.0f,  4.0f, 4.0f
 	};
 
+	float cubeVertices[] = {
+		// positions          // normals
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+		0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+	};
+
 	float skyboxVertices[] = {
 		// positions          
 		-1.0f,  1.0f, -1.0f,
@@ -240,6 +285,18 @@ int main()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glBindVertexArray(0);
 
+	unsigned int cubeVAO, cubeVBO;
+	glGenVertexArrays(1, &cubeVAO);
+	glGenBuffers(1, &cubeVBO);
+	glBindVertexArray(cubeVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glBindVertexArray(0);
+
 	unsigned int skyboxVAO, skyboxVBO;
 	glGenVertexArrays(1, &skyboxVAO);
 	glGenBuffers(1, &skyboxVBO);
@@ -253,7 +310,7 @@ int main()
 	GLSLloader planeShader("shader/vertexNoNorm.glsl", "shader/fragment.glsl");
 	planeShader.CreateCompile();
 	planeShader.CreateProgram();
-	GLSLloader cubeShader("shader/vertex.glsl", "shader/fragment.glsl");
+	GLSLloader cubeShader("shader/vertexReflect.glsl", "shader/fragReflect.glsl");
 	cubeShader.CreateCompile();
 	cubeShader.CreateProgram();
 	GLSLloader skyboxShader("shader/vertexSky.glsl", "shader/fragSky.glsl");
@@ -264,10 +321,6 @@ int main()
 	unsigned int floorTexID = floorTex.GetMapID();
 	GLint texLoc1 = glGetUniformLocation(planeShader.GetProgram(), "texture_diffuse1");
 	glUniform1i(texLoc1, 0);
-
-	TexLoader containerTex("texture/container.jpg", GL_REPEAT, GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR);
-	ModelLoader ourModel("model/cube/cube.obj", &containerTex, false);
-	//ModelLoader ourModel("model/cube/cube.obj", false);
 
 	TexLoader skyTex(skyboxPath, GL_LINEAR, GL_LINEAR);
 	unsigned int skyTexID = skyTex.GetMapID();
@@ -295,13 +348,15 @@ int main()
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		
 		cubeShader.UseProgram();
+		glBindVertexArray(cubeVAO);
 		glm::mat4 model;
 		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		cubeShader.SetUniformMat4("projection", projection);
 		cubeShader.SetUniformMat4("view", view);
 		cubeShader.SetUniformMat4("model", model);
-		ourModel.Draw(cubeShader);
+		cubeShader.SetUniform3f("cameraPos", cameraPos);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		//*********************************************
 		//	Make the default framebuffer active
