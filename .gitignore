@@ -286,3 +286,14 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+# Texture
+*.bmp
+*.png
+*.tga
+*.jpg
+
+# Model
+*.obj
+*.mtl
+*.fbx
