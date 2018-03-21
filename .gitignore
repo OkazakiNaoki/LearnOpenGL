@@ -297,3 +297,4 @@ __pycache__/
 *.obj
 *.mtl
 *.fbx
+*.blend
