@@ -310,7 +310,7 @@ int main()
 	GLSLloader planeShader("shader/vertexNoNorm.glsl", "shader/fragment.glsl");
 	planeShader.CreateCompile();
 	planeShader.CreateProgram();
-	GLSLloader cubeShader("shader/vertexReflect.glsl", "shader/fragReflect.glsl");
+	GLSLloader cubeShader("shader/vertexReflect.glsl", "shader/fragRefract.glsl");
 	cubeShader.CreateCompile();
 	cubeShader.CreateProgram();
 	GLSLloader skyboxShader("shader/vertexSky.glsl", "shader/fragSky.glsl");
@@ -326,6 +326,8 @@ int main()
 	unsigned int skyTexID = skyTex.GetMapID();
 	GLint texLoc2 = glGetUniformLocation(skyboxShader.GetProgram(), "skybox");
 	glUniform1i(texLoc2, 0);
+
+	ModelLoader k63("model/K63/K63.obj", false);
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -348,14 +350,17 @@ int main()
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		
 		cubeShader.UseProgram();
-		glBindVertexArray(cubeVAO);
+		//glBindVertexArray(cubeVAO);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyTexID);
 		glm::mat4 model;
 		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		//model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));
 		cubeShader.SetUniformMat4("projection", projection);
 		cubeShader.SetUniformMat4("view", view);
 		cubeShader.SetUniformMat4("model", model);
 		cubeShader.SetUniform3f("cameraPos", cameraPos);
+		k63.Draw(cubeShader);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		//*********************************************

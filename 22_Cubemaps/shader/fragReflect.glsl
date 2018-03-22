@@ -9,7 +9,7 @@ uniform samplerCube skybox;
 
 void main()
 {             
-    vec3 I = normalize(Position - cameraPos);
-    vec3 R = reflect(I, normalize(Normal));
-    FragColor = vec4(texture(skybox, R).rgb, 1.0);
+    vec3 I = normalize(Position - cameraPos); // eye to surface
+    vec3 R = reflect(I, normalize(Normal)); // incident I, reflect R
+    FragColor = vec4(texture(skybox, R).rgb, 1.0); // set R as tex coordinate
 }
