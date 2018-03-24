@@ -51,6 +51,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "23_AdvancedGLSL", "23_Advan
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "24_GeometryShader", "24_GeometryShader\24_GeometryShader.vcxproj", "{12571B82-4626-4926-9658-366525D332FE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "25_Instancing", "25_Instancing\25_Instancing.vcxproj", "{81A63F31-6EA3-448F-9FC7-40B2B03E3EA6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -251,6 +253,14 @@ Global
 		{12571B82-4626-4926-9658-366525D332FE}.Release|x64.Build.0 = Release|x64
 		{12571B82-4626-4926-9658-366525D332FE}.Release|x86.ActiveCfg = Release|Win32
 		{12571B82-4626-4926-9658-366525D332FE}.Release|x86.Build.0 = Release|Win32
+		{81A63F31-6EA3-448F-9FC7-40B2B03E3EA6}.Debug|x64.ActiveCfg = Debug|x64
+		{81A63F31-6EA3-448F-9FC7-40B2B03E3EA6}.Debug|x64.Build.0 = Debug|x64
+		{81A63F31-6EA3-448F-9FC7-40B2B03E3EA6}.Debug|x86.ActiveCfg = Debug|Win32
+		{81A63F31-6EA3-448F-9FC7-40B2B03E3EA6}.Debug|x86.Build.0 = Debug|Win32
+		{81A63F31-6EA3-448F-9FC7-40B2B03E3EA6}.Release|x64.ActiveCfg = Release|x64
+		{81A63F31-6EA3-448F-9FC7-40B2B03E3EA6}.Release|x64.Build.0 = Release|x64
+		{81A63F31-6EA3-448F-9FC7-40B2B03E3EA6}.Release|x86.ActiveCfg = Release|Win32
+		{81A63F31-6EA3-448F-9FC7-40B2B03E3EA6}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
