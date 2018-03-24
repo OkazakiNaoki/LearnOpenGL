@@ -179,50 +179,20 @@ int main()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glBindVertexArray(0);
 
-	//*********************************************
-	//	Create four shader to use same project,view matrix
-	//*********************************************
-	GLSLloader redShader("shader/vertex.glsl", "shader/fragRed.glsl");
-	redShader.CreateCompile();
-	redShader.CreateProgram();
-	GLSLloader greenShader("shader/vertex.glsl", "shader/fragGreen.glsl");
-	greenShader.CreateCompile();
-	greenShader.CreateProgram();
-	GLSLloader blueShader("shader/vertex.glsl", "shader/fragBlue.glsl");
-	blueShader.CreateCompile();
-	blueShader.CreateProgram();
-	GLSLloader yellowShader("shader/vertex.glsl", "shader/fragYellow.glsl");
-	yellowShader.CreateCompile();
-	yellowShader.CreateProgram();
-	//*********************************************
-	//	Get uniform block index of that shader
-	//*********************************************
-	unsigned int uniformBlockIndexRed = glGetUniformBlockIndex(redShader.GetProgram(), "Matrices");
-	unsigned int uniformBlockIndexGreen = glGetUniformBlockIndex(greenShader.GetProgram(), "Matrices");
-	unsigned int uniformBlockIndexBlue = glGetUniformBlockIndex(blueShader.GetProgram(), "Matrices");
-	unsigned int uniformBlockIndexYellow = glGetUniformBlockIndex(yellowShader.GetProgram(), "Matrices");
-	//*********************************************
-	//	Then bind that index to the binding point (or you can bind in shader program)
-	//*********************************************
-	glUniformBlockBinding(redShader.GetProgram(), uniformBlockIndexRed, 0);
-	glUniformBlockBinding(greenShader.GetProgram(), uniformBlockIndexGreen, 0);
-	glUniformBlockBinding(blueShader.GetProgram(), uniformBlockIndexBlue, 0);
-	glUniformBlockBinding(yellowShader.GetProgram(), uniformBlockIndexYellow, 0);
-	//*********************************************
-	//	Create uniform buffer object
-	//*********************************************
-	unsigned int ubo;
-	glGenBuffers(1, &ubo);
-	//*********************************************
-	//	Bind and allocate size (not yet assign data)
-	//*********************************************
-	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	//*********************************************
-	//	Now bind that ubo to binding point
-	//*********************************************
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0, ubo, 0, 2 * sizeof(glm::mat4));
+	GLSLloader cubeShader("shader/vertex.glsl", "shader/fragSplitX.glsl");
+	cubeShader.CreateCompile();
+	cubeShader.CreateProgram();
+	
+	cubeShader.UseProgram();
+	TexLoader cubeOutTex("texture/uv_template.png", GL_REPEAT, GL_LINEAR, GL_LINEAR);
+	unsigned int cubeOutTexID = cubeOutTex.GetMapID();
+	GLint texLoc1 = glGetUniformLocation(cubeShader.GetProgram(), "texture1");
+	glUniform1i(texLoc1, 0);
+
+	TexLoader cubeInTex("texture/Tileable_marble.jpg", GL_REPEAT, GL_LINEAR, GL_LINEAR);
+	unsigned int cubeInTexID = cubeInTex.GetMapID();
+	GLint texLoc2 = glGetUniformLocation(cubeShader.GetProgram(), "texture2");
+	glUniform1i(texLoc2, 1);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -234,39 +204,23 @@ int main()
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(fov), (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
 		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-		
-		//*********************************************
-		//	Feed data now by glBufferSubData
-		//*********************************************
-		glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
-		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		
+				
+		cubeShader.UseProgram();
 		glBindVertexArray(cubeVAO);
-		redShader.UseProgram();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, cubeOutTexID);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, cubeInTexID);
 		glm::mat4 model;
-		model = glm::translate(model, glm::vec3(-0.75f, 0.75f, 0.0f));	// move top-left
-		redShader.SetUniformMat4("model", model);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		
-		greenShader.UseProgram();
-		model = glm::mat4();
-		model = glm::translate(model, glm::vec3(0.75f, 0.75f, 0.0f)); // move top-right
-		greenShader.SetUniformMat4("model", model);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		yellowShader.UseProgram();
-		model = glm::mat4();
-		model = glm::translate(model, glm::vec3(-0.75f, -0.75f, 0.0f)); // move bottom-left
-		yellowShader.SetUniformMat4("model", model);
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		cubeShader.SetUniformMat4("projection", projection);
+		cubeShader.SetUniformMat4("view", view);
+		cubeShader.SetUniformMat4("model", model);
+		cubeShader.SetUniform3f("cameraPos", cameraPos);
+		cubeShader.SetUniform1f("fragCoordX", 400.0f);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		blueShader.UseProgram();
-		model = glm::mat4();
-		model = glm::translate(model, glm::vec3(0.75f, -0.75f, 0.0f)); // move bottom-right
-		blueShader.SetUniformMat4("model", model);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// Event
 		glfwSwapBuffers(window);
