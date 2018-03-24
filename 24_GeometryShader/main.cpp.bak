@@ -129,14 +129,24 @@ int main()
 		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom-right
 		-0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // bottom-left
 	};
-
+	
+	unsigned int pointVAO, pointVBO;
+	glGenVertexArrays(1, &pointVAO);
+	glGenBuffers(1, &pointVBO);
+	glBindVertexArray(pointVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, pointVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(points), &points, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
+	glBindVertexArray(0);
 	//*********************************************
 	//	Add geometry shader to GLSLloader as third argument
 	//*********************************************
-	GLSLloader geoShader("shader/vertexTexCoord.glsl", "shader/fragment.glsl", "shader/geoExplode.glsl");
+	GLSLloader geoShader("shader/vertex.glsl", "shader/fragment.glsl", "shader/geometry.glsl");
 	geoShader.CreateCompile();
 	geoShader.CreateProgram();
-	ModelLoader nano("model/nanosuit/nanosuit.obj", false);
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -145,25 +155,16 @@ int main()
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		// view/projection transformations
-		glm::mat4 projection = glm::perspective(glm::radians(fov), (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
-		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
+		glBindVertexArray(pointVAO);
 		geoShader.UseProgram();
-		geoShader.SetUniform1f("time", glfwGetTime());
-		glm::mat4 model;
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
-		geoShader.SetUniformMat4("projection", projection);
-		geoShader.SetUniformMat4("view", view);
-		geoShader.SetUniformMat4("model", model);
-		nano.Draw(geoShader);
+		glDrawArrays(GL_POINTS, 0, 4);
 		
 		// Event
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-
+	glDeleteVertexArrays(1, &pointVAO);
+	glDeleteBuffers(1, &pointVBO);
 	glfwTerminate();
 	return 0;
 }

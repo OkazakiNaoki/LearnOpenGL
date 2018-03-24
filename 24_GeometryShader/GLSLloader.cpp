@@ -76,15 +76,18 @@ void GLSLloader::CreateCompile() {
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertShaderCode, GetLength(vertGlslCode));
 	glCompileShader(vertexShader);
+	std::cout << "-----Vertex Shader-----" << std::endl;
 	PrintCompileError(vertexShader);
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragShaderCode, GetLength(fragGlslCode));
 	glCompileShader(fragmentShader);
+	std::cout << "-----Fragment Shader-----" << std::endl;
 	PrintCompileError(fragmentShader);
 	if(useGeometry){
 		geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
 		glShaderSource(geometryShader, 1, &geoShaderCode, GetLength(geoGlslCode));
 		glCompileShader(geometryShader);
+		std::cout << "-----Geometry Shader-----" << std::endl;
 		PrintCompileError(geometryShader);
 	}
 }

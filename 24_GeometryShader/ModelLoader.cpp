@@ -135,7 +135,6 @@ std::vector<Texture> ModelLoader::loadMaterialTextures(aiMaterial *mat, aiTextur
 						break;
 					}
 				}
-				std::cout << skip << std::endl;
 				if (!skip)
 				{
 					Texture texture;
