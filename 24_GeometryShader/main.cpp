@@ -133,10 +133,14 @@ int main()
 	//*********************************************
 	//	Add geometry shader to GLSLloader as third argument
 	//*********************************************
-	GLSLloader geoShader("shader/vertexTexCoord.glsl", "shader/fragment.glsl", "shader/geoExplode.glsl");
-	geoShader.CreateCompile();
-	geoShader.CreateProgram();
+	GLSLloader modelShader("shader/vertexTexCoord.glsl", "shader/fragment.glsl");
+	modelShader.CreateCompile();
+	modelShader.CreateProgram();
+	GLSLloader normalShader("shader/vertexNormal.glsl", "shader/fragYellow.glsl", "shader/geoNormal.glsl");
+	normalShader.CreateCompile();
+	normalShader.CreateProgram();
 	ModelLoader nano("model/nanosuit/nanosuit.obj", false);
+	//ModelLoader nano("model/cube/cube.obj", false);
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -149,15 +153,23 @@ int main()
 		glm::mat4 projection = glm::perspective(glm::radians(fov), (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
 		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-		geoShader.UseProgram();
-		geoShader.SetUniform1f("time", glfwGetTime());
+		modelShader.UseProgram();
 		glm::mat4 model;
 		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
-		geoShader.SetUniformMat4("projection", projection);
-		geoShader.SetUniformMat4("view", view);
-		geoShader.SetUniformMat4("model", model);
-		nano.Draw(geoShader);
+		modelShader.SetUniformMat4("projection", projection);
+		modelShader.SetUniformMat4("view", view);
+		modelShader.SetUniformMat4("model", model);
+		nano.Draw(modelShader);
+
+		normalShader.UseProgram();
+		model = glm::mat4();
+		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		normalShader.SetUniformMat4("projection", projection);
+		normalShader.SetUniformMat4("view", view);
+		normalShader.SetUniformMat4("model", model);
+		nano.Draw(normalShader);
 		
 		// Event
 		glfwSwapBuffers(window);
