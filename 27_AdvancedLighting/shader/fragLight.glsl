@@ -29,13 +29,13 @@ void main()
     float spec = 0.0;
     if(blinn)
     {
-        vec3 halfwayDir = normalize(lightDir + viewDir);  
-        spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
+        vec3 halfwayDir = normalize(lightDir + viewDir); // halfway between the view direction and the light direction
+        spec = pow(max(dot(normal, halfwayDir), 0.0), 32);
     }
     else
     {
         vec3 reflectDir = reflect(-lightDir, normal);
-        spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
+        spec = pow(max(dot(viewDir, reflectDir), 0.0), 8); // exponent set to 0.5, then you can see that 90 deg edge
     }
     vec3 specular = vec3(0.3) * spec; // assuming bright white light color
     FragColor = vec4(ambient + diffuse + specular, 1.0);

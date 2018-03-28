@@ -159,7 +159,7 @@ int main()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glBindVertexArray(0);
 
-	GLSLloader bulbShader("shader/vertexLamp.glsl", "shader/fragLamp.glsl");
+	GLSLloader bulbShader("shader/vertexLamp.glsl", "shader/fragLamp.glsl"); // only draw the light pos with a white cube
 	bulbShader.CreateCompile();
 	bulbShader.CreateProgram();
 	GLSLloader lightShader("shader/vertexLight.glsl", "shader/fragLight.glsl");
