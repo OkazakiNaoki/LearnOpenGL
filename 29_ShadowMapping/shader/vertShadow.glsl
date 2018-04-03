@@ -20,6 +20,6 @@ void main()
     vs_out.Position = vec3(model * vec4(aPos, 1.0));
     vs_out.Normal = transpose(inverse(mat3(model))) * aNormal;
     vs_out.TexCoord = aTexCoords;
-    vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(vs_out.Position, 1.0);
+    vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(vs_out.Position, 1.0); //transform fragment with light space in vertex shader
     gl_Position = projection * view * model * vec4(aPos, 1.0);
 }

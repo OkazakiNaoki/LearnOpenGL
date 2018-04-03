@@ -12,7 +12,7 @@
 
 const unsigned int screenWidth = 800;
 const unsigned int screenHeight = 600;
-const unsigned int shadowWidth = 1024, shadowHeight = 1024;
+const unsigned int shadowWidth = 4096, shadowHeight = 4096;
 
 CustomKeyState customKey;
 bool blinn = false;
@@ -249,6 +249,10 @@ int main()
 	shadowShader.CreateCompile();
 	shadowShader.CreateProgram();
 
+	GLSLloader bulbShader("shader/vertexLamp.glsl", "shader/fragLamp.glsl"); // only draw the light pos with a white cube
+	bulbShader.CreateCompile();
+	bulbShader.CreateProgram();
+
 	//*********************************************
 	//	Create FBO for depth buffer
 	//*********************************************
@@ -281,19 +285,13 @@ int main()
 	shadowShader.SetUniform1i("shadowMap", 1);
 	debugDepthShader.UseProgram();
 	debugDepthShader.SetUniform1i("depthMap", 0);
-
-	/*unsigned int uniformBlockIndex = glGetUniformBlockIndex(depthShader.GetProgram(), "Matrices");
-	glUniformBlockBinding(depthShader.GetProgram(), uniformBlockIndex, 0);
-	unsigned int ubo;
-	glGenBuffers(1, &ubo);
-	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0, ubo, 0, 2 * sizeof(glm::mat4));*/
-
+	
 	TexLoader planeTex("texture/wood.png", GL_REPEAT, GL_LINEAR, GL_LINEAR, true);
 	GLint planeTexID = planeTex.GetMapID();
 
+	glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
+
+	ModelLoader bulb("model/cube/cube.obj", false);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -306,7 +304,7 @@ int main()
 		//	Light Matrix
 		//*********************************************
 		glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 7.5f);
-		glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
 		simpleDepthShader.UseProgram();
@@ -358,7 +356,7 @@ int main()
 		shadowShader.SetUniformMat4("view", view);
 		// set light uniforms
 		shadowShader.SetUniform3f("viewPos", cameraPos);
-		shadowShader.SetUniform3f("lightPos", glm::vec3(-2.0f, 4.0f, -1.0f));
+		shadowShader.SetUniform3f("lightPos", lightPos);
 		shadowShader.SetUniformMat4("lightSpaceMatrix", lightSpaceMatrix);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, planeTexID);
@@ -391,7 +389,15 @@ int main()
 		shadowShader.SetUniformMat4("model", model);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		model = glm::mat4();
+		model = glm::translate(model, lightPos);
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		bulbShader.UseProgram();
+		bulbShader.SetUniformMat4("projection", projection);
+		bulbShader.SetUniformMat4("view", view);
+		bulbShader.SetUniformMat4("model", model);
+		bulb.Draw(bulbShader);
 
 		// visualize
 		/*debugDepthShader.UseProgram();
