@@ -245,10 +245,6 @@ int main()
 	debugDepthShader.CreateCompile();
 	debugDepthShader.CreateProgram();
 
-	GLSLloader shadowShader("shader/vertShadow.glsl", "shader/fragShadow.glsl");
-	shadowShader.CreateCompile();
-	shadowShader.CreateProgram();
-
 	//*********************************************
 	//	Create FBO for depth buffer
 	//*********************************************
@@ -276,9 +272,6 @@ int main()
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	shadowShader.UseProgram();
-	shadowShader.SetUniform1i("diffuseTexture", 0);
-	shadowShader.SetUniform1i("shadowMap", 1);
 	debugDepthShader.UseProgram();
 	debugDepthShader.SetUniform1i("depthMap", 0);
 
@@ -350,58 +343,15 @@ int main()
 		glViewport(0, 0, screenWidth, screenHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-		shadowShader.UseProgram();
-		glm::mat4 projection = glm::perspective(glm::radians(fov), (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
-		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-		shadowShader.SetUniformMat4("projection", projection);
-		shadowShader.SetUniformMat4("view", view);
-		// set light uniforms
-		shadowShader.SetUniform3f("viewPos", cameraPos);
-		shadowShader.SetUniform3f("lightPos", glm::vec3(-2.0f, 4.0f, -1.0f));
-		shadowShader.SetUniformMat4("lightSpaceMatrix", lightSpaceMatrix);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, planeTexID);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, depthMap);
-		//*********************************************
-		//	Draw scene
-		//*********************************************
-		// plane part
-		model = glm::mat4();
-		shadowShader.SetUniformMat4("model", model);
-		glBindVertexArray(planeVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		// cubes part
-		model = glm::mat4();
-		model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0));
-		model = glm::scale(model, glm::vec3(0.5f));
-		shadowShader.SetUniformMat4("model", model);
-		glBindVertexArray(cubeVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		model = glm::mat4();
-		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 1.0));
-		model = glm::scale(model, glm::vec3(0.5f));
-		shadowShader.SetUniformMat4("model", model);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		model = glm::mat4();
-		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 2.0));
-		model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-		model = glm::scale(model, glm::vec3(0.25));
-		shadowShader.SetUniformMat4("model", model);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 		// visualize
-		/*debugDepthShader.UseProgram();
+		debugDepthShader.UseProgram();
 		debugDepthShader.SetUniform1f("near_plane", 1.0f);
 		debugDepthShader.SetUniform1f("far_plane", 7.5f);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, depthMap);
 		glBindVertexArray(quadVAO);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		glBindVertexArray(0);*/
+		glBindVertexArray(0);
 
 		// Event
 		glfwSwapBuffers(window);
@@ -409,10 +359,6 @@ int main()
 	}
 	glDeleteVertexArrays(1, &planeVAO);
 	glDeleteBuffers(1, &planeVBO);
-	glDeleteVertexArrays(1, &cubeVAO);
-	glDeleteBuffers(1, &cubeVBO);
-	glDeleteVertexArrays(1, &quadVAO);
-	glDeleteBuffers(1, &quadVBO);
 	glfwTerminate();
 	return 0;
 }
