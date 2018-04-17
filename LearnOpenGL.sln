@@ -61,6 +61,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "28_GammaCorrection", "28_Ga
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "29_ShadowMapping", "29_ShadowMapping\29_ShadowMapping.vcxproj", "{BBE02154-2B7C-4B52-9986-FF3560F5A65A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "30_PointShadows", "30_PointShadows\30_PointShadows.vcxproj", "{356B9641-B674-421F-88AF-3762A5A442C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -301,6 +303,14 @@ Global
 		{BBE02154-2B7C-4B52-9986-FF3560F5A65A}.Release|x64.Build.0 = Release|x64
 		{BBE02154-2B7C-4B52-9986-FF3560F5A65A}.Release|x86.ActiveCfg = Release|Win32
 		{BBE02154-2B7C-4B52-9986-FF3560F5A65A}.Release|x86.Build.0 = Release|Win32
+		{356B9641-B674-421F-88AF-3762A5A442C3}.Debug|x64.ActiveCfg = Debug|x64
+		{356B9641-B674-421F-88AF-3762A5A442C3}.Debug|x64.Build.0 = Debug|x64
+		{356B9641-B674-421F-88AF-3762A5A442C3}.Debug|x86.ActiveCfg = Debug|Win32
+		{356B9641-B674-421F-88AF-3762A5A442C3}.Debug|x86.Build.0 = Debug|Win32
+		{356B9641-B674-421F-88AF-3762A5A442C3}.Release|x64.ActiveCfg = Release|x64
+		{356B9641-B674-421F-88AF-3762A5A442C3}.Release|x64.Build.0 = Release|x64
+		{356B9641-B674-421F-88AF-3762A5A442C3}.Release|x86.ActiveCfg = Release|Win32
+		{356B9641-B674-421F-88AF-3762A5A442C3}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
