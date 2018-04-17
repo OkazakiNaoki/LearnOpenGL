@@ -29,10 +29,6 @@ float lastY = 600.0 / 2.0;
 float fov = 60.0f;
 double mousePosX, mousePosY;
 
-// timing
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
-
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
@@ -269,6 +265,10 @@ int main()
 
 	ModelLoader bulb("model/cube/cube.obj", false);
 
+	float nearPlane = 1.0f;
+	float farPlane = 25.0f;
+	float roomScale = 5.0f;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
@@ -276,16 +276,14 @@ int main()
 		// per-frame time logic
 		// --------------------
 		float currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
 
 		// move light position over time
-		lightPos.z = sin(currentFrame * 0.5) * 3.0;
+		//lightPos.z = sin(currentFrame * 0.5) * 3.0;
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)shadowWidth / (float)shadowHeight, 1.0f, 25.0f);
+		glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)shadowWidth / (float)shadowHeight, nearPlane, farPlane);
 		std::vector<glm::mat4> shadowTransforms;
 		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 		shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
@@ -303,14 +301,14 @@ int main()
 		depthShader.UseProgram();
 		for (unsigned int i = 0; i < 6; ++i)
 			depthShader.SetUniformMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
-		depthShader.SetUniform1f("far_plane", 25.0f);
+		depthShader.SetUniform1f("far_plane", farPlane);
 		depthShader.SetUniform3f("lightPos", lightPos);
 		//*********************************************
 		//	Draw scene for Depth
 		//*********************************************
 		// room cube
 		glm::mat4 model;
-		model = glm::scale(model, glm::vec3(5.0f));
+		model = glm::scale(model, glm::vec3(roomScale));
 		depthShader.SetUniformMat4("model", model);
 		glDisable(GL_CULL_FACE); // note that we disable culling here since we render 'inside' the cube instead of the usual 'outside' which throws off the normal culling methods.
 		depthShader.SetUniform1i("reverse_normals", 1); // A small little hack to invert normals when drawing cube from the inside so lighting still works.
@@ -361,8 +359,8 @@ int main()
 		// set lighting uniforms
 		shadowShader.SetUniform3f("lightPos", lightPos);
 		shadowShader.SetUniform3f("viewPos", cameraPos);
-		shadowShader.SetUniform1i("shadows", shadows); // enable/disable shadows by pressing 'SPACE'
-		shadowShader.SetUniform1f("far_plane", 25.0f);
+		shadowShader.SetUniform1i("shadows", shadows); // enable/disable shadows by pressing numpad '1'
+		shadowShader.SetUniform1f("far_plane", farPlane);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, woodTexID);
 		glActiveTexture(GL_TEXTURE1);
@@ -372,7 +370,7 @@ int main()
 		//*********************************************
 		// room cube
 		model = glm::mat4();
-		model = glm::scale(model, glm::vec3(5.0f));
+		model = glm::scale(model, glm::vec3(roomScale));
 		shadowShader.SetUniformMat4("model", model);
 		glDisable(GL_CULL_FACE); // note that we disable culling here since we render 'inside' the cube instead of the usual 'outside' which throws off the normal culling methods.
 		shadowShader.SetUniform1i("reverse_normals", 1); // A small little hack to invert normals when drawing cube from the inside so lighting still works.
