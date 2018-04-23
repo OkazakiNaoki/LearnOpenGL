@@ -16,6 +16,7 @@ const unsigned int shadowWidth = 4096, shadowHeight = 4096;
 
 CustomKeyState customKey;
 bool useDepthMap = true;
+float heightScale = 0.1f;
 
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -49,6 +50,10 @@ void processInput(GLFWwindow *window) // Keyboard key input detection
 		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 	if (customKey.GetKeyDown(window, GLFW_KEY_KP_1))
 		useDepthMap = !useDepthMap;
+	if (customKey.GetKeyDown(window, GLFW_KEY_KP_ADD))
+		heightScale += 0.1f;
+	if (customKey.GetKeyDown(window, GLFW_KEY_KP_SUBTRACT))
+		heightScale -= 0.1f;
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -221,6 +226,8 @@ int main()
 
 	customKey.RegisterKey(GLFW_KEY_KP_1);
 	customKey.RegisterKey(GLFW_KEY_KP_2);
+	customKey.RegisterKey(GLFW_KEY_KP_ADD);
+	customKey.RegisterKey(GLFW_KEY_KP_SUBTRACT);
 			
 	GLSLloader lightShader("shader/vertLight.glsl", "shader/fragLight.glsl");
 	lightShader.CreateCompile();
@@ -232,11 +239,18 @@ int main()
 
 	glm::vec3 lightPos(0.5f, 0.0f, 1.0f);
 
-	TexLoader wallTex("texture/bricks2.jpg", GL_REPEAT, GL_LINEAR, GL_LINEAR, true);
+	/*TexLoader wallTex("texture/bricks2.jpg", GL_REPEAT, GL_LINEAR, GL_LINEAR, true);
 	GLint wallTexID = wallTex.GetMapID();
 	TexLoader normTex("texture/bricks2_normal.jpg", GL_REPEAT, GL_LINEAR, GL_LINEAR, false);
 	GLint normTexID = normTex.GetMapID();
 	TexLoader depthTex("texture/bricks2_disp.jpg", GL_REPEAT, GL_LINEAR, GL_LINEAR, false);
+	GLint depthTexID = depthTex.GetMapID();*/
+
+	TexLoader wallTex("texture/wood.png", GL_REPEAT, GL_LINEAR, GL_LINEAR, true);
+	GLint wallTexID = wallTex.GetMapID();
+	TexLoader normTex("texture/toy_box_normal.png", GL_REPEAT, GL_LINEAR, GL_LINEAR, false);
+	GLint normTexID = normTex.GetMapID();
+	TexLoader depthTex("texture/toy_box_disp.png", GL_REPEAT, GL_LINEAR, GL_LINEAR, false);
 	GLint depthTexID = depthTex.GetMapID();
 
 	lightShader.UseProgram();
@@ -268,7 +282,7 @@ int main()
 		lightShader.SetUniformMat4("model", model);
 		lightShader.SetUniform3f("viewPos", cameraPos);
 		lightShader.SetUniform3f("lightPos", lightPos);
-		lightShader.SetUniform1f("heightScale", 0.1f);
+		lightShader.SetUniform1f("heightScale", heightScale);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, wallTexID);
         glActiveTexture(GL_TEXTURE1);
