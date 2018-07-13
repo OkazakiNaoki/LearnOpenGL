@@ -79,6 +79,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "37_PBRLighting", "37_PBRLig
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "38_DiffuseIrradiance", "38_DiffuseIrradiance\38_DiffuseIrradiance.vcxproj", "{7C903F01-B1DB-41D7-A74D-21AECE490336}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "39_SpecularIBL", "39_SpecularIBL\39_SpecularIBL.vcxproj", "{7D48FB25-EA2D-449B-A572-ACC42C18083E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -391,6 +393,14 @@ Global
 		{7C903F01-B1DB-41D7-A74D-21AECE490336}.Release|x64.Build.0 = Release|x64
 		{7C903F01-B1DB-41D7-A74D-21AECE490336}.Release|x86.ActiveCfg = Release|Win32
 		{7C903F01-B1DB-41D7-A74D-21AECE490336}.Release|x86.Build.0 = Release|Win32
+		{7D48FB25-EA2D-449B-A572-ACC42C18083E}.Debug|x64.ActiveCfg = Debug|x64
+		{7D48FB25-EA2D-449B-A572-ACC42C18083E}.Debug|x64.Build.0 = Debug|x64
+		{7D48FB25-EA2D-449B-A572-ACC42C18083E}.Debug|x86.ActiveCfg = Debug|Win32
+		{7D48FB25-EA2D-449B-A572-ACC42C18083E}.Debug|x86.Build.0 = Debug|Win32
+		{7D48FB25-EA2D-449B-A572-ACC42C18083E}.Release|x64.ActiveCfg = Release|x64
+		{7D48FB25-EA2D-449B-A572-ACC42C18083E}.Release|x64.Build.0 = Release|x64
+		{7D48FB25-EA2D-449B-A572-ACC42C18083E}.Release|x86.ActiveCfg = Release|Win32
+		{7D48FB25-EA2D-449B-A572-ACC42C18083E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

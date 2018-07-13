@@ -292,6 +292,8 @@ __pycache__/
 *.png
 *.tga
 *.jpg
+*.hdr
+*.exr
 
 # Model
 *.obj
