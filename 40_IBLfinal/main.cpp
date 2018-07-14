@@ -315,11 +315,13 @@ void renderCylinder(unsigned int* cylinderVAO, unsigned int* cylinderVBO)
 		std::vector<glm::vec3> norms;	// normals
 		std::vector<glm::vec2> uvs;	// uvs
 
-									// Store positions and normals slice-by-slice
+		// Store positions and normals slice-by-slice
 
 		const float dTheta = 2 * PI / static_cast<float>(numSlices);
 		float r = 0.5f;
-		float h = 1.0f;
+		float h = 5.0f;
+		float uvScale = 2.0f;
+		float hUV = uvScale / h / 2;
 
 		for (int i = 0; i < numSlices; ++i) {
 
@@ -364,20 +366,20 @@ void renderCylinder(unsigned int* cylinderVAO, unsigned int* cylinderVBO)
 
 			// top
 			uvs.push_back(glm::vec2(0, 0));
-			uvs.push_back(glm::vec2(cosCW, sinCW));
-			uvs.push_back(glm::vec2(cosCCW, sinCCW));
+			uvs.push_back(glm::vec2(cosCW / uvScale, sinCW / uvScale));
+			uvs.push_back(glm::vec2(cosCCW / uvScale, sinCCW / uvScale));
 			// bottom
 			uvs.push_back(glm::vec2(0, 0));
-			uvs.push_back(glm::vec2(cosCCW, sinCCW));
-			uvs.push_back(glm::vec2(cosCW, sinCW));
+			uvs.push_back(glm::vec2(cosCCW / uvScale, sinCCW / uvScale));
+			uvs.push_back(glm::vec2(cosCW / uvScale, sinCW / uvScale));
 			// side 1
-			uvs.push_back(glm::vec2(CCW, 2*h));
-			uvs.push_back(glm::vec2(CW, 2*h));
-			uvs.push_back(glm::vec2(CCW, 0));
+			uvs.push_back(glm::vec2(CCW / uvScale, 1/ hUV));
+			uvs.push_back(glm::vec2(CW / uvScale, 1/ hUV));
+			uvs.push_back(glm::vec2(CCW / uvScale, 0));
 			// side 2
-			uvs.push_back(glm::vec2(CW, 2*h));
-			uvs.push_back(glm::vec2(CW, 0));
-			uvs.push_back(glm::vec2(CCW, 0));
+			uvs.push_back(glm::vec2(CW / uvScale, 1/ hUV));
+			uvs.push_back(glm::vec2(CW / uvScale, 0));
+			uvs.push_back(glm::vec2(CCW / uvScale, 0));
 
 			// -- NORMALS --
 
@@ -793,6 +795,7 @@ int main()
 		
 		pbrShader.SetUniformMat4("model", model);
 		//renderSphere(&sphereVAO, &sphereVBO, &sphereEBO);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		renderCylinder(&cylinderVAO, &cylinderVBO);
 		
 		for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)
@@ -833,6 +836,12 @@ int main()
 	glDeleteVertexArrays(1, &sphereVAO);
 	glDeleteBuffers(1, &sphereVBO);
 	glDeleteBuffers(1, &sphereEBO);
+	glDeleteVertexArrays(1, &cubeVAO);
+	glDeleteBuffers(1, &cubeVBO);
+	glDeleteVertexArrays(1, &quadVAO);
+	glDeleteBuffers(1, &quadVBO);
+	glDeleteVertexArrays(1, &cylinderVAO);
+	glDeleteBuffers(1, &cylinderVBO);
 	glfwTerminate();
 	return 0;
 }
